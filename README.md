@@ -7,3 +7,11 @@ I hope this is something fun for others as well!
 Below is a rough sketch of how to run this program in the PowerShell console and diplay your poem to the console. 
 
 ![](HowToRunInPS.png)
+
+You create a new file in VS Code through the PowerShell console towards the bottom with:
+=> dotnet new console -o DesiredFileName --use-program-main true
+Then copy and paste the Main.cs code to your own Program.cs file that you create.
+to run it 'change directory (cd)' into your program's directory and to run type:
+=> dotnet run 
+Play around and see what you could add to it, if there's something good it might land on the repo!
+This is solely just for fun and I felt like it would be a good learning experience. 
