@@ -1,81 +1,94 @@
-﻿using System;
-using System.IO; 
+using System;
+using System.IO;
 using System.Linq;
 
-
-namespace PoemWriter;
-class Program
+namespace PoemWriter
 {
-    static void Main(string[] args)
+    class Poem
     {
+        private string _name;
+        private string _poem;
+        private int _maxLineLength;
+        private string _wrappedPoem;
+        private string[] _words;
 
-        string name, poem, line, wrappedPoem = ""; 
-        string[] words;
-        int maxLineLength;
-
-        //Get name. 
-        Console.WriteLine("Please enter your name: ");
-        name = Console.ReadLine();
-
-
-        //get poem
-        Console.WriteLine("Annnnnnd...");
-        Console.WriteLine("What would you like your poem to say?!");
-        poem = Console.ReadLine();
-
-        //take a string and return a list of strings no longer than 20
-        maxLineLength = 20;
-
-        words = poem.Split(' ');
-        
-        line = "";
-        if (wrappedPoem == null) wrappedPoem ="";
-        wrappedPoem += line;
-        foreach (string word in words){
-           if ((line + word).Length > maxLineLength)
-            {   
-                if (!string.IsNullOrEmpty(line)){
-                    wrappedPoem += line + "\n";
-                }
-                line ="";
-            }
-            if (line.Length > 0)
-            {
-                line += " " + word;
-            }
-            else
-            {
-                line = word;
-            }
-        }
-        if (!string.IsNullOrEmpty(line)){
-            wrappedPoem += line;
-            }
-
-        //create the final product 
-        string finalPoem = $"This poem was written by the great and talented {name}!\n\n{wrappedPoem}";
-
-        Console.WriteLine(finalPoem);
-
-
-        //Write poem to .txt file
-        Console.WriteLine("Please enter your desired file name: ");
-        string filePrompt = Console.ReadLine(); 
-        string fileName = $"{filePrompt}.txt";
-
-        //Check if file already exists
-        if (File.Exists(fileName))
+        public Poem(string name, string poem, int maxLineLength)
         {
-            Console.WriteLine("File already exists. Please enter a different name: ");
-            filePrompt = Console.ReadLine();
-            fileName = $"{filePrompt}.txt";
+            _name = name;
+            _poem = poem;
+            _maxLineLength = maxLineLength;
         }
 
-        //create file and write poem to it
-        StreamWriter writer;
-        writer = new StreamWriter(fileName);
-        writer.WriteLine(finalPoem);
-        writer.Close();
+        public void WrapPoem()
+        {
+            _words = _poem.Split(' ');
 
+            string line = "";
+            _wrappedPoem = "";
+            foreach (string word in _words)
+            {
+                if ((line + word).Length > _maxLineLength)
+                {
+                    if (!string.IsNullOrEmpty(line))
+                    {
+                        _wrappedPoem += line + "\n";
+                    }
+                    line = "";
+                }
+                if (line.Length > 0)
+                {
+                    line += " " + word;
+                }
+                else
+                {
+                    line = word;
+                }
+            }
+            if (!string.IsNullOrEmpty(line))
+            {
+                _wrappedPoem += line;
+            }
+        }
+
+        public string GetFinalPoem()
+        {
+            return $"This poem was written by the great and talented {_name}!\n\n{_wrappedPoem}";
+        }
+
+        public void WriteToFile(string fileName)
+        {
+            if (File.Exists(fileName))
+            {
+                Console.WriteLine("File already exists. Please enter a different name: ");
+                string filePrompt = Console.ReadLine();
+                fileName = $"{filePrompt}.txt";
+            }
+
+            StreamWriter writer = new StreamWriter(fileName);
+            writer.WriteLine(GetFinalPoem());
+            writer.Close();
+        }
+    }
+
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("Please enter your name: ");
+            string name = Console.ReadLine();
+
+            Console.WriteLine("Annnnnnd...");
+            Console.WriteLine("What would you like your poem to say?!");
+            string poem = Console.ReadLine();
+
+            int maxLineLength = 20;
+            Poem wrappedPoem = new Poem(name, poem, maxLineLength);
+            wrappedPoem.WrapPoem();
+            Console.WriteLine(wrappedPoem.GetFinalPoem());
+
+            Console.WriteLine("Please enter your desired file name: ");
+            string fileName = Console.ReadLine() + ".txt";
+            wrappedPoem.WriteToFile(fileName);
+        }
     }
 }
