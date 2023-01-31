@@ -6,13 +6,13 @@ namespace PoemWriter
 {
     class Poem //creating the poem's class method.
     {
-        private string _name; // defining the instance variables
+        private string _name; // assign the instance variables
         private string _poem;
         private int _maxLineLength;
         private string _wrappedPoem;
-        private string[] _words; //define array of strings
+        private string[] _words; //assign array of strings
 
-        public Poem(string name, string poem, int maxLineLength) //create constructor and set parameters
+        public Poem(string name, string poem, int maxLineLength) //create parameterized constructor
         {
             _name = name;
             _poem = poem;
