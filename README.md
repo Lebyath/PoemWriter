@@ -5,8 +5,9 @@ This is all a beginner learning experience for me but I can catch on pretty fast
 I hope this is something fun for others as well!
 
 Below is a rough sketch of how to run this program in the PowerShell console and diplay your poem to the console. 
+I've decided to upgrade it to where the user can now enter their desired line length for wrapping.
 
-![](HowToRunInPS.png)
+![](Update_01_30_2023.png)
 
 You create a new file in VS Code through the PowerShell console towards the bottom with:
 => dotnet new console -o DesiredFileName --use-program-main true
