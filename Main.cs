@@ -29,7 +29,7 @@ namespace PoemWriter
             {
                 if ((line + word).Length > _maxLineLength) // if the length of line + word is greater than the max length
                 {
-                    if (!string.IsNullOrEmpty(line))//if line is empty 
+                    if (!string.IsNullOrEmpty(line))//if line is not empty 
                     {
                         _wrappedPoem += line + "\n";
                     }
