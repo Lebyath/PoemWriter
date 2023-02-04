@@ -58,7 +58,7 @@ namespace PoemWriter
                 fileName = $"{filePrompt}.txt";
             }
 
-            //Use 'StreamWritor' to write the final poem a the file
+            //Use 'StreamWriter' to write the final poem a the file
             using (StreamWriter writer = new StreamWriter(fileName))
             {
                 writer.WriteLine(GetFinalPoem());
