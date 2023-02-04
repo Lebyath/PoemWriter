@@ -4,99 +4,123 @@ using System.Linq;
 
 namespace PoemWriter
 {
-    class Poem //creating the poem's class method.
+    class Poem
     {
-        private string _name; // assign the instance variables
+        // Private fields to store information about the poem
+        private string _name;
         private string _poem;
         private int _maxLineLength;
         private string _wrappedPoem;
-        private string[] _words; //assign array of strings
+        private string[] _words;
 
-        public Poem(string name, string poem, int maxLineLength) //create parameterized constructor
+        // Constructor for the Poem
+        public Poem(string name, string poem, int maxLineLength)
         {
             _name = name;
             _poem = poem;
-            _maxLineLength = maxLineLength;
+            _maxLineLength = maxLineLength > 0 ? maxLineLength : 20;
         }
 
-        public void WrapPoem() //object where we use algorithm to wrap poem
+        // Method to wrap the poem text 
+        public void WrapPoem()
         {
-            _words = _poem.Split(' '); //split the user's input into an array of strings
-
+            _words = _poem.Split(' ');
             string line = "";
             _wrappedPoem = "";
-            foreach (string word in _words) //iterate over each word in the array
+            foreach (string word in _words)
             {
-                if ((line + word).Length > _maxLineLength) // if the length of line + word is greater than the max length
+                if ((line + word).Length > _maxLineLength)
                 {
-                    if (!string.IsNullOrEmpty(line))//if line is not empty 
+                    if (!string.IsNullOrWhiteSpace(line))
                     {
                         _wrappedPoem += line + "\n";
                     }
                     line = "";
                 }
-                if (line.Length > 0)
-                {
-                    line += " " + word;
-                }
-                else
-                {
-                    line = word;
-                }
+                line += line.Length > 0 ? " " + word : word;
             }
-            if (!string.IsNullOrEmpty(line)) //after loop is finished check if line is not empty
-            {
-                _wrappedPoem += line; // if not 
-            }
+            _wrappedPoem += !string.IsNullOrWhiteSpace(line) ? line : "";
         }
 
-        public string GetFinalPoem() //concatinates the wrapped poem with name presentation
+        // Method to get the final poem text, including the author's name
+        public string GetFinalPoem()
         {
             return $"This poem was written by the great and talented {_name}!\n\n{_wrappedPoem}";
         }
 
-        public void WriteToFile(string fileName) //checks if f_name already exists then writes to file  
+        //Method to write the final poem text to a file
+        public void WriteToFile(string fileName)
         {
-            if (File.Exists(fileName))
-            {
+            while (File.Exists(fileName))
+            {   // if file exists, prompt the user for a different file name
                 Console.WriteLine("File already exists. Please enter a different name: ");
                 string filePrompt = Console.ReadLine();
                 fileName = $"{filePrompt}.txt";
             }
 
-            StreamWriter writer = new StreamWriter(fileName);
-            writer.WriteLine(GetFinalPoem());
-            writer.Close();
+            //Use 'StreamWritor' to write the final poem a the file
+            using (StreamWriter writer = new StreamWriter(fileName))
+            {
+                writer.WriteLine(GetFinalPoem());
+            }
         }
     }
 
     class Program
     {
-        static void Main(string[] args) //bring everything together and prompt the user
+        static void Main(string[] args) // Bring it all together
         {
             //Get name
             Console.WriteLine("Please enter your name: ");
             string name = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Console.WriteLine("ERROR: Name cannot be empty nor only contain whitespace.");
+                return;
+            }
+
 
             //Get poem
             Console.WriteLine("Annnnnnd...");
             Console.WriteLine("What would you like your poem to say?!");
             string poem = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(poem))
+            {
+                Console.WriteLine("ERROR: Poem cannot be empty nor only contain whitespace.");
+                return;
+            }
 
-            //ask for amount of characters to wrap each line and wrap the poem
+
+            //Get max line length and wrap poem
             Console.WriteLine("At how many characters would you like it to wrap? (20 is Recommended): ");
-            int maxLineLength = Convert.ToInt16(Console.ReadLine());
-            if (maxLineLength <= 0){ //this part is tricky, see if you can make this better
-                maxLineLength = 20;
+            int maxLineLength = 0;
+            bool isValidMaxLineLength = false;
+            while (!isValidMaxLineLength)
+            {
+                if (Int32.TryParse(Console.ReadLine(), out maxLineLength))
+                {
+                    if (maxLineLength <= 0)
+                    {
+                        Console.WriteLine("Max line length must be a positive integer. Please enter a valid value: ");
+                    }
+                    else
+                    {
+                        isValidMaxLineLength = true;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Max line length must be a positive integer. Please enter a valid value: ");
+                }
             }
             Poem wrappedPoem = new Poem(name, poem, maxLineLength);
-            wrappedPoem.WrapPoem();//call WrapPoem
-            Console.WriteLine(wrappedPoem.GetFinalPoem());//call GetFinalPoem and print it out
+            wrappedPoem.WrapPoem();
+            Console.WriteLine(wrappedPoem.GetFinalPoem());
 
-            //Get file name
+            //Write to .txt file
             Console.WriteLine("Please enter your desired file name: ");
             string fileName = Console.ReadLine() + ".txt";
-            wrappedPoem.WriteToFile(fileName); //call WriteToFile
+            wrappedPoem.WriteToFile(fileName);
         }
     }
 }
